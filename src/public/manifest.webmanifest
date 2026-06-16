@@ -1,0 +1,9 @@
+{
+  "name": "BST BT Radio",
+  "short_name": "BT Radio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111514",
+  "theme_color": "#141817",
+  "icons": []
+}

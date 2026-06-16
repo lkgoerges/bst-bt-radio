@@ -1,0 +1,17 @@
+[Unit]
+Description=BST BT Radio
+After=network-online.target bluetooth.service
+Wants=network-online.target bluetooth.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/bst-bt-radio
+EnvironmentFile=/opt/bst-bt-radio/.env
+ExecStart=/usr/bin/node /opt/bst-bt-radio/dist/server/index.js
+Restart=on-failure
+RestartSec=5
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target
