@@ -47,6 +47,8 @@ VfL Pi:
 BT_RADIO_SITE=vfl
 ```
 
+If a Pi has both onboard Bluetooth and a USB Bluetooth stick, set `BT_RADIO_BLUETOOTH_CONTROLLER` to the controller address shown by `bluetoothctl list`.
+
 Start the app once so it writes `data/config.json`:
 
 ```bash

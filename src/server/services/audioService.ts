@@ -14,7 +14,9 @@ export class AudioService {
     if (this.mockMode) return { sinkId: "mock-sink", sinkName: speaker.name, volume: 50 };
 
     const sink = await this.findBluetoothSink(speaker);
-    if (!sink.sinkId) return sink;
+    if (!sink.sinkId) {
+      throw new Error(`PipeWire did not expose a Bluetooth audio sink for ${speaker.name}.`);
+    }
     await runCommand("wpctl", ["set-default", sink.sinkId], 10_000);
     return this.getDefaultSinkStatus();
   }
