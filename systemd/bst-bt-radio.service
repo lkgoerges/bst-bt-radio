@@ -7,11 +7,13 @@ Wants=network-online.target bluetooth.service
 Type=simple
 WorkingDirectory=/opt/bst-bt-radio
 EnvironmentFile=/opt/bst-bt-radio/.env
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
 ExecStart=/usr/bin/node /opt/bst-bt-radio/dist/server/index.js
 Restart=on-failure
 RestartSec=5
-User=pi
-Group=pi
+User=raspi
+Group=raspi
 
 [Install]
 WantedBy=multi-user.target

@@ -74,6 +74,7 @@ Pair each speaker:
 ## 5. Install systemd Service
 
 The provided unit assumes the checkout lives at `/opt/bst-bt-radio`.
+It runs as the `raspi` user and expects the per-user PipeWire runtime at `/run/user/1000`.
 
 ```bash
 sudo cp systemd/bst-bt-radio.service /etc/systemd/system/bst-bt-radio.service

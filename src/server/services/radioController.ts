@@ -26,7 +26,9 @@ export class RadioController {
     const config = this.store.getConfig();
     const state = this.store.getState();
     const selectedSpeaker = this.getSpeaker(state.selectedSpeakerId) ?? this.getSpeaker(config.site.defaultSpeakerId);
-    if (selectedSpeaker) await this.selectSpeaker(selectedSpeaker.id, { resume: false });
+    if (selectedSpeaker && selectedSpeaker.id !== state.selectedSpeakerId) {
+      await this.store.setSelectedSpeaker(selectedSpeaker.id);
+    }
 
     if (config.startup.mode === "resume-last" && state.currentStationId) {
       await this.playStation(state.currentStationId);
