@@ -96,6 +96,9 @@ It runs as the `raspi` user and expects the per-user PipeWire runtime at `/run/u
 
 ```bash
 sudo cp systemd/bst-bt-radio.service /etc/systemd/system/bst-bt-radio.service
+sudo cp systemd/bst-bt-radio-shutdown.sudoers /etc/sudoers.d/bst-bt-radio-shutdown
+sudo chmod 0440 /etc/sudoers.d/bst-bt-radio-shutdown
+sudo visudo -cf /etc/sudoers.d/bst-bt-radio-shutdown
 sudo systemctl daemon-reload
 sudo systemctl enable --now bst-bt-radio.service
 ```
