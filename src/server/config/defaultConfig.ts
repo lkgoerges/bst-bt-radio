@@ -124,7 +124,8 @@ export function createDefaultConfig(siteId: SiteId): AppConfig {
         name: "VfL Schildesche",
         defaultSpeakerId: "vfl-schildesche",
         peers: [
-          { id: "home", name: "Home", baseUrl: "http://bst-radio-home.local:3090" }
+          { id: "kitchen", name: "Küche", baseUrl: "http://bst-radio-kitchen.local:3090" },
+          { id: "living-room", name: "Living Room", baseUrl: "http://bst-radio-living.local:3090" }
         ]
       },
       startup: { mode: "idle" },
