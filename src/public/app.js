@@ -16,7 +16,8 @@ const els = {
   stations: document.querySelector("#stations"),
   playbackStatus: document.querySelector("#playbackStatus"),
   locationsSection: document.querySelector("#locationsSection"),
-  locations: document.querySelector("#locations")
+  locations: document.querySelector("#locations"),
+  shutdownButton: document.querySelector("#shutdownButton")
 };
 
 async function api(path, options = {}) {
@@ -109,7 +110,7 @@ function renderStations(stations, currentStationId, isPlaying) {
         button.className = `station-button${active ? " active" : ""}`;
         button.innerHTML = `
           <span class="play-mark" aria-hidden="true">${active ? "■" : "▶"}</span>
-          <span>
+          <span class="station-copy">
             <span class="primary-text">${escapeHtml(station.name)}</span>
             <span class="secondary-text">${escapeHtml(station.description || station.group)}</span>
           </span>
@@ -191,6 +192,22 @@ els.startupResume.addEventListener("click", () =>
     })
   )
 );
+
+els.shutdownButton.addEventListener("click", async () => {
+  const confirmed = window.confirm("Shut down this Raspberry Pi now?");
+  if (!confirmed) return;
+  els.shutdownButton.disabled = true;
+  els.shutdownButton.textContent = "Shutting down...";
+  try {
+    await api("/api/system/shutdown", { method: "POST" });
+    els.playbackStatus.textContent = "Shutdown requested";
+  } catch (error) {
+    els.shutdownButton.disabled = false;
+    els.shutdownButton.textContent = "Shut down Pi";
+    els.playbackStatus.textContent = error.message;
+    els.playbackStatus.className = "status-error";
+  }
+});
 
 function connectEvents() {
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";

@@ -54,6 +54,11 @@ export function createApp(controller: RadioController): express.Express {
     response.json(controller.getStatus());
   }));
 
+  app.post("/api/system/shutdown", asyncHandler(async (_, response) => {
+    await controller.shutdownHost();
+    response.json({ ok: true, message: "Shutdown requested" });
+  }));
+
   app.use(express.static(staticDir));
   app.get("*", (_, response) => {
     response.sendFile(path.join(staticDir, "index.html"));

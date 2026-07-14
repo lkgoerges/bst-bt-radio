@@ -2,6 +2,7 @@ import type { AppStatus, RuntimeState, SpeakerConfig, StationConfig, StartupMode
 import { AudioService } from "./audioService.js";
 import { ConfigStore } from "../config/configStore.js";
 import { MpvClient } from "./mpvClient.js";
+import { runCommand } from "./command.js";
 
 export class RadioController {
   constructor(
@@ -96,6 +97,15 @@ export class RadioController {
 
   async shutdown(): Promise<void> {
     await this.mpv.shutdown();
+  }
+
+  async shutdownHost(): Promise<void> {
+    await this.stop().catch(() => undefined);
+    setTimeout(() => {
+      runCommand("sudo", ["-n", "shutdown", "-h", "now"], 5_000).catch((error) => {
+        console.error("Host shutdown failed:", error);
+      });
+    }, 500);
   }
 
   private async prepareSpeaker(speaker: SpeakerConfig): Promise<void> {

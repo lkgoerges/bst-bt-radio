@@ -47,6 +47,10 @@ input {
   min-height: 104px;
 }
 
+.topbar > div {
+  min-width: 0;
+}
+
 .eyebrow {
   margin: 0 0 6px;
   color: var(--muted);
@@ -67,6 +71,7 @@ h1 {
   font-size: clamp(2rem, 7vw, 4.8rem);
   line-height: 0.96;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 h2 {
@@ -213,6 +218,7 @@ output {
   display: block;
   font-weight: 800;
   line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .secondary-text {
@@ -221,6 +227,7 @@ output {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .station-groups {
@@ -251,6 +258,10 @@ output {
   padding: 12px;
 }
 
+.station-copy {
+  min-width: 0;
+}
+
 .play-mark {
   display: grid;
   place-items: center;
@@ -270,6 +281,37 @@ output {
   display: block;
   min-height: 64px;
   padding: 12px;
+}
+
+.maintenance {
+  margin-top: 34px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.maintenance summary {
+  width: max-content;
+  cursor: pointer;
+  opacity: 0.58;
+}
+
+.maintenance summary:hover {
+  opacity: 1;
+}
+
+.maintenance-button {
+  margin-top: 12px;
+  border: 1px solid rgba(255, 117, 107, 0.36);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--red);
+  cursor: pointer;
+  padding: 9px 12px;
+}
+
+.maintenance-button:disabled {
+  cursor: default;
+  opacity: 0.65;
 }
 
 .status-good {
