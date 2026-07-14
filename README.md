@@ -1,16 +1,15 @@
 # BST BT Radio
 
-Local Raspberry Pi radio bridge for Bose SoundTouch speakers after SoundTouch cloud/app support ended.
+Local Raspberry Pi radio player for Bose SoundTouch speakers after SoundTouch cloud/app support ended.
 
-The Pi connects to a selected Bose SoundTouch over Bluetooth, plays internet radio with `mpv`, routes audio through PipeWire, and exposes a small local web app for station, speaker, startup, and volume control.
+Each Pi plays internet radio with `mpv`, routes audio through the local 3.5 mm output/PipeWire, and exposes a small local web app for station, startup, and volume control.
 
 ## Shape
 
-- One speaker at a time for v1.
-- Same app runs on both Pis.
-- Each Pi keeps local config and remembered speaker volume.
-- Home Pi controls Kitchen and Living Room.
-- VfL Pi controls VfL Schildesche.
+- One Pi per physical SoundTouch speaker.
+- Same app runs on each Pi with a different `BT_RADIO_SITE`.
+- Each Pi keeps local config and remembered volume.
+- Kitchen, Living Room, and VfL Schildesche can link to each other through the local web UI.
 - The web UI is local-network only.
 
 ## Development
@@ -22,7 +21,7 @@ npm run dev
 
 Open `http://localhost:3090`.
 
-Development defaults to mock mode so it can run on macOS without Bluetooth, PipeWire, or `mpv`.
+Development defaults to mock mode so it can run on macOS without PipeWire or `mpv`.
 
 ## Raspberry Pi Runtime
 
@@ -38,7 +37,7 @@ Create or edit `.env`:
 cp .env.example .env
 ```
 
-Use `BT_RADIO_SITE=home` for the Home Pi and `BT_RADIO_SITE=vfl` for the VfL Pi.
+Use `BT_RADIO_SITE=kitchen`, `BT_RADIO_SITE=living-room`, or `BT_RADIO_SITE=vfl` for the three Pis.
 
 Build and run:
 

@@ -10,7 +10,8 @@ export const speakerSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   model: z.string().min(1),
-  bluetoothMac: z.string(),
+  output: z.string().min(1).default("local-default"),
+  audioSink: z.string().optional(),
   room: z.string().optional()
 });
 

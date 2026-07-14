@@ -19,7 +19,8 @@ export interface SpeakerConfig {
   id: string;
   name: string;
   model: "SoundTouch 10" | "SoundTouch 20" | string;
-  bluetoothMac: string;
+  output: "local-analog" | "local-default" | string;
+  audioSink?: string;
   room?: string;
 }
 

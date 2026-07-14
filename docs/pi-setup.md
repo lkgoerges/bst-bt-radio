@@ -12,10 +12,16 @@ Install Node.js 20 or newer. The easiest path on Raspberry Pi OS is usually Node
 
 ## 2. Configure Hostname
 
-Home Pi:
+Kitchen Pi:
 
 ```bash
-sudo hostnamectl set-hostname bst-radio-home
+sudo hostnamectl set-hostname bst-radio-kitchen
+```
+
+Living Room Pi:
+
+```bash
+sudo hostnamectl set-hostname bst-radio-living
 ```
 
 VfL Pi:
@@ -26,7 +32,8 @@ sudo hostnamectl set-hostname bst-radio-vfl
 
 With `avahi-daemon` running, the web apps should be reachable as:
 
-- `http://bst-radio-home.local:3090`
+- `http://bst-radio-kitchen.local:3090`
+- `http://bst-radio-living.local:3090`
 - `http://bst-radio-vfl.local:3090`
 
 ## 3. Configure The App
@@ -35,10 +42,16 @@ With `avahi-daemon` running, the web apps should be reachable as:
 cp .env.example .env
 ```
 
-Home Pi:
+Kitchen Pi:
 
 ```bash
-BT_RADIO_SITE=home
+BT_RADIO_SITE=kitchen
+```
+
+Living Room Pi:
+
+```bash
+BT_RADIO_SITE=living-room
 ```
 
 VfL Pi:
@@ -47,7 +60,7 @@ VfL Pi:
 BT_RADIO_SITE=vfl
 ```
 
-If a Pi has both onboard Bluetooth and a USB Bluetooth stick, set `BT_RADIO_BLUETOOTH_CONTROLLER` to the controller address shown by `bluetoothctl list`.
+Leave `BT_RADIO_AUDIO_SINK` empty unless you need to force a specific PipeWire sink from `wpctl status`.
 
 Start the app once so it writes `data/config.json`:
 
@@ -57,20 +70,23 @@ npm run build
 npm start
 ```
 
-Stop it, then edit `data/config.json` and add the Bluetooth MAC addresses for the configured speakers.
+Stop it, then edit `data/config.json` only if you want to rename the speaker, change station URLs, or set a per-speaker `audioSink`.
 
-## 4. Pair Bose Speakers
+## 4. Select Analog Audio
 
-Put the Bose SoundTouch into Bluetooth pairing mode, then scan:
+Connect the Pi headphone jack to the SoundTouch AUX input with a 3.5 mm cable.
+Select the Pi's analog output:
 
 ```bash
-bluetoothctl scan on
+sudo raspi-config
 ```
 
-Pair each speaker:
+Use `System Options` -> `Audio` and select the headphone/3.5 mm output.
+You can also inspect PipeWire sinks:
 
 ```bash
-./scripts/pair-speaker.sh AA:BB:CC:DD:EE:FF
+wpctl status
+wpctl set-default <sink-id>
 ```
 
 ## 5. Install systemd Service
@@ -90,10 +106,28 @@ Check logs:
 journalctl -u bst-bt-radio.service -f
 ```
 
-## 6. Diagnostics
+## 6. StromPi 3
+
+Install the StromPi shutdown monitor after the HAT is mounted:
+
+```bash
+sudo STROMPI_BATTERY_SHUTDOWN_LEVEL=2 STROMPI_SHUTDOWN_TIMER_SECONDS=60 ./scripts/install-strompi3.sh
+sudo reboot
+```
+
+After the reboot:
+
+```bash
+sudo STROMPI_BATTERY_SHUTDOWN_LEVEL=2 STROMPI_SHUTDOWN_TIMER_SECONDS=60 /opt/strompi3/configure-strompi3.py
+sudo systemctl start strompi3-shutdown.service
+```
+
+See `docs/strompi3.md` for details.
+
+## 7. Diagnostics
 
 ```bash
 ./scripts/diagnose-audio.sh
 ```
 
-Look for a `bluez_output` sink in `wpctl status` after connecting a Bose speaker.
+Look for the default audio sink and verify that `mpv` can play a stream through the 3.5 mm output.

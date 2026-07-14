@@ -67,6 +67,56 @@ const stations: StationConfig[] = [
 ];
 
 export function createDefaultConfig(siteId: SiteId): AppConfig {
+  if (siteId === "kitchen") {
+    return {
+      site: {
+        id: "kitchen",
+        name: "Küche",
+        defaultSpeakerId: "kitchen",
+        peers: [
+          { id: "living-room", name: "Living Room", baseUrl: "http://bst-radio-living.local:3090" },
+          { id: "vfl", name: "VfL Schildesche", baseUrl: "http://bst-radio-vfl.local:3090" }
+        ]
+      },
+      startup: { mode: "idle" },
+      speakers: [
+        {
+          id: "kitchen",
+          name: "Küche",
+          model: "SoundTouch 10",
+          output: "local-analog",
+          room: "Küche"
+        }
+      ],
+      stations
+    };
+  }
+
+  if (siteId === "living-room") {
+    return {
+      site: {
+        id: "living-room",
+        name: "Living Room",
+        defaultSpeakerId: "living-room",
+        peers: [
+          { id: "kitchen", name: "Küche", baseUrl: "http://bst-radio-kitchen.local:3090" },
+          { id: "vfl", name: "VfL Schildesche", baseUrl: "http://bst-radio-vfl.local:3090" }
+        ]
+      },
+      startup: { mode: "idle" },
+      speakers: [
+        {
+          id: "living-room",
+          name: "Living Room",
+          model: "SoundTouch 10",
+          output: "local-analog",
+          room: "Living Room"
+        }
+      ],
+      stations
+    };
+  }
+
   if (siteId === "vfl") {
     return {
       site: {
@@ -83,7 +133,7 @@ export function createDefaultConfig(siteId: SiteId): AppConfig {
           id: "vfl-schildesche",
           name: "VfL Schildesche",
           model: "SoundTouch 20",
-          bluetoothMac: "",
+          output: "local-analog",
           room: "VfL Schildesche"
         }
       ],
@@ -104,16 +154,16 @@ export function createDefaultConfig(siteId: SiteId): AppConfig {
     speakers: [
       {
         id: "kitchen",
-        name: "Kitchen",
+        name: "Küche",
         model: "SoundTouch 10",
-        bluetoothMac: "",
-        room: "Kitchen"
+        output: "local-analog",
+        room: "Küche"
       },
       {
         id: "living-room",
         name: "Living Room",
         model: "SoundTouch 10",
-        bluetoothMac: "",
+        output: "local-analog",
         room: "Living Room"
       }
     ],

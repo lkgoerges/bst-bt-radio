@@ -1,13 +1,11 @@
 import type { AppStatus, RuntimeState, SpeakerConfig, StationConfig, StartupMode } from "../types.js";
 import { AudioService } from "./audioService.js";
-import { BluetoothService } from "./bluetoothService.js";
 import { ConfigStore } from "../config/configStore.js";
 import { MpvClient } from "./mpvClient.js";
 
 export class RadioController {
   constructor(
     private readonly store: ConfigStore,
-    private readonly bluetooth: BluetoothService,
     private readonly audio: AudioService,
     private readonly mpv: MpvClient,
     private readonly mockMode: boolean,
@@ -68,7 +66,6 @@ export class RadioController {
 
     if (previous.id !== next.id) {
       await this.mpv.stop().catch(() => undefined);
-      await this.bluetooth.disconnect(previous).catch(() => undefined);
     }
 
     await this.prepareSpeaker(next);
@@ -102,8 +99,7 @@ export class RadioController {
   }
 
   private async prepareSpeaker(speaker: SpeakerConfig): Promise<void> {
-    await this.bluetooth.connect(speaker);
-    await this.audio.selectSpeakerSink(speaker);
+    await this.audio.selectOutput(speaker);
   }
 
   private getSelectedSpeaker(): SpeakerConfig {

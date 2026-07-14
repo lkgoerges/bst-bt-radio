@@ -2,7 +2,7 @@
   "name": "bst-bt-radio",
   "version": "0.1.0",
   "private": true,
-  "description": "Local Raspberry Pi Bluetooth radio bridge for Bose SoundTouch speakers.",
+  "description": "Local Raspberry Pi radio player for Bose SoundTouch speakers.",
   "type": "module",
   "scripts": {
     "dev": "BT_RADIO_MOCK=1 tsx watch src/server/index.ts",
