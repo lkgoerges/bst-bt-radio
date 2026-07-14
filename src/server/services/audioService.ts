@@ -27,7 +27,11 @@ export class AudioService {
     const normalized = Math.max(0, Math.min(100, Math.round(volume)));
     if (this.mockMode) return { sinkId: "mock-sink", sinkName: "Mock speaker", volume: normalized };
 
-    await runCommand("wpctl", ["set-volume", "@DEFAULT_AUDIO_SINK@", `${normalized / 100}`], 10_000);
+    await runCommand("wpctl", ["set-volume", "@DEFAULT_AUDIO_SINK@", `${normalized / 100}`], 10_000).catch(() =>
+      runCommand("amixer", ["set", "Master", `${normalized}%`], 10_000).catch(() =>
+        runCommand("amixer", ["set", "Headphone", `${normalized}%`], 10_000)
+      )
+    );
     return this.getDefaultSinkStatus();
   }
 
@@ -38,10 +42,26 @@ export class AudioService {
       stdout: ""
     }));
     const volumeMatch = stdout.match(/Volume:\s+([0-9.]+)/i);
+    if (!volumeMatch) {
+      const alsaStatus = await this.getAlsaVolumeStatus();
+      if (alsaStatus.volume !== undefined) return alsaStatus;
+    }
     return {
       sinkId: "@DEFAULT_AUDIO_SINK@",
       sinkName: "Default audio sink",
       volume: volumeMatch ? Math.round(Number(volumeMatch[1]) * 100) : undefined
+    };
+  }
+
+  private async getAlsaVolumeStatus(): Promise<AudioSinkStatus> {
+    const { stdout } = await runCommand("amixer", ["get", "Master"], 10_000)
+      .catch(() => runCommand("amixer", ["get", "Headphone"], 10_000))
+      .catch(() => ({ stdout: "" }));
+    const volumeMatch = stdout.match(/\[([0-9]{1,3})%\]/);
+    return {
+      sinkId: "alsa-default",
+      sinkName: "ALSA default output",
+      volume: volumeMatch ? Number(volumeMatch[1]) : undefined
     };
   }
 
