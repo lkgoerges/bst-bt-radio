@@ -27,16 +27,14 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
   CONFIG_FILE="/boot/config.txt"
 fi
 
-if ! grep -q '^dtoverlay=miniuart-bt$' "$CONFIG_FILE"; then
-  echo "dtoverlay=miniuart-bt" | sudo tee -a "$CONFIG_FILE" >/dev/null
-fi
-
-if ! grep -q '^enable_uart=1$' "$CONFIG_FILE"; then
+if grep -q '^enable_uart=' "$CONFIG_FILE"; then
+  sudo sed -i 's/^enable_uart=.*/enable_uart=1/' "$CONFIG_FILE"
+else
   echo "enable_uart=1" | sudo tee -a "$CONFIG_FILE" >/dev/null
 fi
 
-if command -v raspi-config >/dev/null 2>&1; then
-  sudo raspi-config nonint do_serial 2 || true
+if ! grep -q '^dtoverlay=miniuart-bt$' "$CONFIG_FILE"; then
+  echo "dtoverlay=miniuart-bt" | sudo tee -a "$CONFIG_FILE" >/dev/null
 fi
 
 tmp_dir="$(mktemp -d)"
