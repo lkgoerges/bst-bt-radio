@@ -1,0 +1,42 @@
+{
+  "app": {
+    "title": "BST Radio",
+    "idle": "Bereit",
+    "mock": "Testmodus"
+  },
+  "controls": {
+    "stop": "Stopp",
+    "volume": "Lautstärke",
+    "startup": "Startverhalten",
+    "startupIdle": "Aus",
+    "startupResume": "Fortsetzen"
+  },
+  "sections": {
+    "speakers": "Lautsprecher",
+    "stations": "Sender",
+    "locations": "Standorte",
+    "maintenance": "Wartung"
+  },
+  "status": {
+    "idle": "Bereit",
+    "playing": "Läuft",
+    "stopped": "Gestoppt",
+    "error": "Fehler",
+    "noSpeaker": "Kein Lautsprecher",
+    "local": "Lokal",
+    "shutdownRequested": "Herunterfahren angefordert"
+  },
+  "maintenance": {
+    "shutdown": "Pi herunterfahren",
+    "shutdownConfirm": "Diesen Raspberry Pi jetzt herunterfahren?",
+    "shuttingDown": "Fährt herunter..."
+  },
+  "groups": {
+    "local": "Lokal",
+    "wdr": "WDR",
+    "news": "Nachrichten",
+    "music": "Musik",
+    "rock": "Rock",
+    "tunein": "Weitere Sender"
+  }
+}

@@ -1,6 +1,7 @@
 const state = {
   status: null,
-  volumeTimer: null
+  volumeTimer: null,
+  labels: {}
 };
 
 const els = {
@@ -19,6 +20,60 @@ const els = {
   locations: document.querySelector("#locations"),
   shutdownButton: document.querySelector("#shutdownButton")
 };
+
+const fallbackLabels = {
+  app: { idle: "Bereit", mock: "Testmodus" },
+  maintenance: {
+    shutdown: "Pi herunterfahren",
+    shutdownConfirm: "Diesen Raspberry Pi jetzt herunterfahren?",
+    shuttingDown: "Fährt herunter..."
+  },
+  status: {
+    idle: "Bereit",
+    playing: "Läuft",
+    stopped: "Gestoppt",
+    error: "Fehler",
+    noSpeaker: "Kein Lautsprecher",
+    shutdownRequested: "Herunterfahren angefordert"
+  },
+  groups: {}
+};
+
+async function loadLabels(locale = "de") {
+  const response = await fetch(`/i18n/${locale}.json`).catch(() => undefined);
+  const labels = response?.ok ? await response.json() : {};
+  state.labels = mergeLabels(fallbackLabels, labels);
+  applyStaticLabels();
+}
+
+function mergeLabels(base, override) {
+  return Object.fromEntries(
+    Object.entries({ ...base, ...override }).map(([key, value]) => {
+      const baseValue = base[key];
+      const overrideValue = override[key];
+      if (isRecord(baseValue) && isRecord(overrideValue)) {
+        return [key, mergeLabels(baseValue, overrideValue)];
+      }
+      return [key, value];
+    })
+  );
+}
+
+function isRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function t(path, fallback = path) {
+  return path.split(".").reduce((value, part) => value?.[part], state.labels) ?? fallback;
+}
+
+function applyStaticLabels() {
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n, element.textContent);
+  });
+  els.stopButton.title = t("controls.stop", "Stopp");
+  els.stopButton.setAttribute("aria-label", t("controls.stop", "Stopp"));
+}
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -56,11 +111,11 @@ function render() {
   const isPlaying = runtime.playback.status === "playing";
   const selectedVolume = runtime.rememberedVolumes[runtime.selectedSpeakerId] ?? 50;
 
-  els.siteLabel.textContent = `${config.site.name}${mockMode ? " / Mock" : ""}`;
-  els.nowPlaying.textContent = isPlaying && station ? station.name : "Idle";
-  els.playbackStatus.textContent = runtime.playback.status;
+  els.siteLabel.textContent = `${config.site.name}${mockMode ? ` / ${t("app.mock", "Testmodus")}` : ""}`;
+  els.nowPlaying.textContent = isPlaying && station ? station.name : t("app.idle", "Bereit");
+  els.playbackStatus.textContent = t(`status.${runtime.playback.status}`, runtime.playback.status);
   els.playbackStatus.className = runtime.playback.status === "error" ? "status-error" : "";
-  els.speakerStatus.textContent = speaker ? speaker.name : "No speaker";
+  els.speakerStatus.textContent = speaker ? speaker.name : t("status.noSpeaker", "Kein Lautsprecher");
   els.volumeSlider.value = String(selectedVolume);
   els.volumeValue.value = String(selectedVolume);
 
@@ -99,7 +154,7 @@ function renderStations(stations, currentStationId, isPlaying) {
     const section = document.createElement("section");
     section.className = "station-group";
     const heading = document.createElement("h3");
-    heading.textContent = group;
+    heading.textContent = t(`groups.${group}`, group);
     const list = document.createElement("div");
     list.className = "station-list";
     list.replaceChildren(
@@ -194,16 +249,16 @@ els.startupResume.addEventListener("click", () =>
 );
 
 els.shutdownButton.addEventListener("click", async () => {
-  const confirmed = window.confirm("Shut down this Raspberry Pi now?");
+  const confirmed = window.confirm(t("maintenance.shutdownConfirm", "Diesen Raspberry Pi jetzt herunterfahren?"));
   if (!confirmed) return;
   els.shutdownButton.disabled = true;
-  els.shutdownButton.textContent = "Shutting down...";
+  els.shutdownButton.textContent = t("maintenance.shuttingDown", "Fährt herunter...");
   try {
     await api("/api/system/shutdown", { method: "POST" });
-    els.playbackStatus.textContent = "Shutdown requested";
+    els.playbackStatus.textContent = t("status.shutdownRequested", "Herunterfahren angefordert");
   } catch (error) {
     els.shutdownButton.disabled = false;
-    els.shutdownButton.textContent = "Shut down Pi";
+    els.shutdownButton.textContent = t("maintenance.shutdown", "Pi herunterfahren");
     els.playbackStatus.textContent = error.message;
     els.playbackStatus.className = "status-error";
   }
@@ -219,5 +274,6 @@ function connectEvents() {
   socket.addEventListener("close", () => window.setTimeout(connectEvents, 2000));
 }
 
+await loadLabels("de");
 await runAction(() => api("/api/status"));
 connectEvents();

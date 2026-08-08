@@ -14,6 +14,7 @@ const mockMode = process.env.BT_RADIO_MOCK === "1" || process.platform !== "linu
 const configPath = path.resolve(process.env.BT_RADIO_CONFIG ?? "./data/config.json");
 const statePath = path.resolve(process.env.BT_RADIO_STATE ?? "./data/state.json");
 const mpvSocketPath = process.env.BT_RADIO_MPV_SOCKET ?? "/tmp/bst-bt-radio-mpv.sock";
+const mpvCacheSeconds = Number(process.env.BT_RADIO_MPV_CACHE_SECONDS ?? 20);
 const audioSink = process.env.BT_RADIO_AUDIO_SINK || undefined;
 
 const store = new ConfigStore(configPath, statePath, site);
@@ -23,7 +24,7 @@ let broadcastStatus: () => void = () => undefined;
 const controller = new RadioController(
   store,
   new AudioService(mockMode, audioSink),
-  new MpvClient(mpvSocketPath, mockMode),
+  new MpvClient(mpvSocketPath, mockMode, mpvCacheSeconds),
   mockMode,
   () => broadcastStatus()
 );

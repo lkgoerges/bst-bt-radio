@@ -7,7 +7,8 @@ export class MpvClient {
 
   constructor(
     private readonly socketPath: string,
-    private readonly mockMode: boolean
+    private readonly mockMode: boolean,
+    private readonly cacheSeconds = 20
   ) {}
 
   async start(): Promise<void> {
@@ -19,6 +20,8 @@ export class MpvClient {
       "--no-video",
       "--audio-display=no",
       "--terminal=no",
+      "--cache=yes",
+      `--demuxer-readahead-secs=${this.cacheSeconds}`,
       `--input-ipc-server=${this.socketPath}`
     ]);
     this.process.once("exit", () => {

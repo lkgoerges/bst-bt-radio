@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#141817" />
-    <title>BST BT Radio</title>
+    <title>BST Radio</title>
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
@@ -12,58 +12,58 @@
     <main class="shell">
       <header class="topbar">
         <div>
-          <p class="eyebrow" id="siteLabel">BST BT Radio</p>
-          <h1 id="nowPlaying">Idle</h1>
+          <p class="eyebrow" id="siteLabel">BST Radio</p>
+          <h1 id="nowPlaying">Bereit</h1>
         </div>
-        <button class="icon-button" id="stopButton" type="button" title="Stop" aria-label="Stop">
+        <button class="icon-button" id="stopButton" type="button" title="Stopp" aria-label="Stopp">
           <span aria-hidden="true">■</span>
         </button>
       </header>
 
       <section class="control-band">
         <div class="field">
-          <label for="volumeSlider">Volume</label>
+          <label for="volumeSlider" data-i18n="controls.volume">Lautstärke</label>
           <div class="volume-row">
             <input id="volumeSlider" type="range" min="0" max="100" value="50" />
             <output id="volumeValue" for="volumeSlider">50</output>
           </div>
         </div>
         <div class="field">
-          <span>Startup</span>
-          <div class="segmented" role="group" aria-label="Startup mode">
-            <button type="button" id="startupIdle">Idle</button>
-            <button type="button" id="startupResume">Resume</button>
+          <span data-i18n="controls.startup">Startverhalten</span>
+          <div class="segmented" role="group" aria-label="Startverhalten">
+            <button type="button" id="startupIdle" data-i18n="controls.startupIdle">Aus</button>
+            <button type="button" id="startupResume" data-i18n="controls.startupResume">Fortsetzen</button>
           </div>
         </div>
       </section>
 
       <section class="section">
         <div class="section-heading">
-          <h2>Speakers</h2>
-          <span id="speakerStatus">Disconnected</span>
+          <h2 data-i18n="sections.speakers">Lautsprecher</h2>
+          <span id="speakerStatus">Kein Lautsprecher</span>
         </div>
         <div class="speaker-grid" id="speakers"></div>
       </section>
 
       <section class="section station-section">
         <div class="section-heading">
-          <h2>Stations</h2>
-          <span id="playbackStatus">Idle</span>
+          <h2 data-i18n="sections.stations">Sender</h2>
+          <span id="playbackStatus">Bereit</span>
         </div>
         <div class="station-groups" id="stations"></div>
       </section>
 
       <section class="section" id="locationsSection" hidden>
         <div class="section-heading">
-          <h2>Locations</h2>
-          <span>Local</span>
+          <h2 data-i18n="sections.locations">Standorte</h2>
+          <span data-i18n="status.local">Lokal</span>
         </div>
         <div class="locations" id="locations"></div>
       </section>
 
       <details class="maintenance">
-        <summary>Maintenance</summary>
-        <button class="maintenance-button" id="shutdownButton" type="button">Shut down Pi</button>
+        <summary data-i18n="sections.maintenance">Wartung</summary>
+        <button class="maintenance-button" id="shutdownButton" type="button" data-i18n="maintenance.shutdown">Pi herunterfahren</button>
       </details>
     </main>
     <script src="/app.js" type="module"></script>

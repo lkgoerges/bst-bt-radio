@@ -61,9 +61,20 @@ export class ConfigStore {
   private async loadConfig(): Promise<AppConfig> {
     const fallback = createDefaultConfig(this.siteId);
     const config = await this.readJson(this.configPath, fallback);
-    const parsed = appConfigSchema.parse(config);
+    const parsed = appConfigSchema.parse(this.withMissingDefaults(fallback, config));
     await this.writeJson(this.configPath, parsed);
     return parsed;
+  }
+
+  private withMissingDefaults(fallback: AppConfig, config: AppConfig): AppConfig {
+    const stationIds = new Set(config.stations.map((station) => station.id));
+    return {
+      ...config,
+      stations: [
+        ...config.stations,
+        ...fallback.stations.filter((station) => !stationIds.has(station.id))
+      ]
+    };
   }
 
   private async loadState(config: AppConfig): Promise<RuntimeState> {

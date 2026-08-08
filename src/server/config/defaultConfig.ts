@@ -16,6 +16,27 @@ const stations: StationConfig[] = [
     description: "WDR 1LIVE live stream."
   },
   {
+    id: "1live-diggi",
+    name: "1LIVE DIGGI",
+    streamUrl: "https://wdr-1live-diggi.icecastssl.wdr.de/wdr/1live/diggi/mp3/128/stream.mp3",
+    group: "wdr",
+    description: "Digitaler 1LIVE Musikstream."
+  },
+  {
+    id: "radio-21",
+    name: "Radio 21",
+    streamUrl: "https://radio21.streamabc.net/radio21-hannover-mp3-192-3735655",
+    group: "rock",
+    description: "Rock und Pop aus Niedersachsen."
+  },
+  {
+    id: "radio-bob",
+    name: "Radio BOB!",
+    streamUrl: "http://streams.radiobob.de/bob-live/mp3-192/mediaplayer",
+    group: "rock",
+    description: "Rockmusik und Klassiker."
+  },
+  {
     id: "deutschlandfunk",
     name: "Deutschlandfunk",
     streamUrl: "https://st01.sslstream.dlf.de/dlf/01/128/mp3/stream.mp3",
